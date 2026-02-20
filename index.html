@@ -17,117 +17,52 @@ color:white;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
-overflow:hidden;
+min-height:100vh;
+opacity:0;                /* EMPIEZA OCULTO */
+transition:opacity 1.5s ease; /* FADE SUAVE */
 }
 
-/* ================= OPENING ================= */
-
-#opening{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#000;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:9999;
-animation:fadeOut 1.2s ease forwards;
-animation-delay:4s;
+body.loaded{
+opacity:1;                /* CUANDO CARGA */
 }
-
-.logo-wrapper{
-display:flex;
-flex-direction:column;
-align-items:center;
-animation:zoomIn 1.8s ease forwards;
-}
-
-.logo-img{
-width:260px;   /* LOGO GRANDE */
-height:auto;
-filter:drop-shadow(0 0 40px #00f2ff)
-       drop-shadow(0 0 80px #00f2ff);
-animation:energyPulse 2.5s infinite ease-in-out;
-}
-
-.opening-sub{
-margin-top:30px;
-font-size:16px;
-letter-spacing:4px;
-opacity:0.6;
-}
-
-@keyframes zoomIn{
-0%{
-transform:scale(0.6);
-opacity:0;
-}
-100%{
-transform:scale(1);
-opacity:1;
-}
-}
-
-@keyframes energyPulse{
-0%{
-filter:drop-shadow(0 0 20px #00f2ff);
-}
-50%{
-filter:drop-shadow(0 0 80px #00f2ff)
-       drop-shadow(0 0 150px #00f2ff);
-}
-100%{
-filter:drop-shadow(0 0 20px #00f2ff);
-}
-}
-
-@keyframes fadeOut{
-to{
-opacity:0;
-visibility:hidden;
-}
-}
-
-/* ================= PANEL ================= */
 
 .container{
-opacity:0;
-animation:fadeInPanel 1s ease forwards;
-animation-delay:4.3s;
 background:rgba(15,23,42,0.9);
-padding:40px;
+padding:50px;
 border-radius:20px;
-box-shadow:0 0 60px rgba(0,255,255,0.2);
-width:480px;
+box-shadow:0 0 60px rgba(0,255,255,0.15);
+width:500px;
 text-align:center;
 backdrop-filter:blur(10px);
 }
 
-@keyframes fadeInPanel{
-to{ opacity:1; }
+.logo{
+width:180px;
+height:auto;
+margin-bottom:30px;
+filter:drop-shadow(0 0 30px rgba(0,242,255,0.5));
 }
 
-h1{
-margin-bottom:20px;
-font-weight:600;
+.title{
+font-size:28px;
+font-weight:700;
 letter-spacing:2px;
+margin-bottom:30px;
+color:#00f2ff;
 }
 
 .count{
 font-size:70px;
 color:#00f2ff;
 margin:20px 0;
-transition:0.3s;
 }
 
 ul{
 list-style:none;
 padding:0;
-max-height:200px;
+max-height:220px;
 overflow-y:auto;
+margin-top:20px;
 }
 
 li{
@@ -139,33 +74,30 @@ transition:0.2s;
 }
 
 li:hover{
-background:rgba(0,255,255,0.2);
+background:rgba(0,255,255,0.15);
 }
 </style>
 </head>
 
 <body>
 
-<!-- OPENING -->
-<div id="opening">
-<div class="logo-wrapper">
-<img src="SaintClick.png" class="logo-img" alt="SaintClick Logo">
-<div class="opening-sub">SaintClick Software</div>
-</div>
-</div>
-
-<!-- PANEL -->
 <div class="container">
-<h1>Online</h1>
+
+<img src="SaintClick.png" class="logo" alt="SaintClick Logo">
+
+<div class="title">SaintClick Software</div>
+
 <div class="count" id="count">-</div>
+
 <ul id="userList"></ul>
+
 </div>
 
 <script>
 const API_URL = "https://saintclick-api.onrender.com/online";
 let lastOnline = null;
 
-async function fetchOnlineUsers(){
+async function fetchOnlineUsers(initialLoad = false){
     const countEl = document.getElementById("count");
     const listEl = document.getElementById("userList");
 
@@ -187,13 +119,24 @@ async function fetchOnlineUsers(){
             listEl.appendChild(li);
         });
 
+        // Solo al cargar por primera vez hacemos fade-in
+        if(initialLoad){
+            document.body.classList.add("loaded");
+        }
+
     }catch(err){
         countEl.innerText = lastOnline!==null?lastOnline:"-";
+        if(initialLoad){
+            document.body.classList.add("loaded");
+        }
     }
 }
 
-fetchOnlineUsers();
-setInterval(fetchOnlineUsers,10000);
+// Primera carga con fade
+fetchOnlineUsers(true);
+
+// Actualización cada 10s sin fade
+setInterval(()=>fetchOnlineUsers(false),10000);
 </script>
 
 </body>
