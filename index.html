@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaintClick Software</title>
+
+<link rel="icon" type="image/png" href="SaintClick.png">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:'Orbitron',sans-serif;
+background:radial-gradient(circle at center,#0f172a 0%,#020617 100%);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+}
+
+/* ================= OPENING ================= */
+
+#opening{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+animation:fadeOut 1.2s ease forwards;
+animation-delay:4s;
+}
+
+.logo-wrapper{
+display:flex;
+flex-direction:column;
+align-items:center;
+animation:zoomIn 1.8s ease forwards;
+}
+
+.logo-img{
+width:260px;   /* LOGO GRANDE */
+height:auto;
+filter:drop-shadow(0 0 40px #00f2ff)
+       drop-shadow(0 0 80px #00f2ff);
+animation:energyPulse 2.5s infinite ease-in-out;
+}
+
+.opening-sub{
+margin-top:30px;
+font-size:16px;
+letter-spacing:4px;
+opacity:0.6;
+}
+
+@keyframes zoomIn{
+0%{
+transform:scale(0.6);
+opacity:0;
+}
+100%{
+transform:scale(1);
+opacity:1;
+}
+}
+
+@keyframes energyPulse{
+0%{
+filter:drop-shadow(0 0 20px #00f2ff);
+}
+50%{
+filter:drop-shadow(0 0 80px #00f2ff)
+       drop-shadow(0 0 150px #00f2ff);
+}
+100%{
+filter:drop-shadow(0 0 20px #00f2ff);
+}
+}
+
+@keyframes fadeOut{
+to{
+opacity:0;
+visibility:hidden;
+}
+}
+
+/* ================= PANEL ================= */
+
+.container{
+opacity:0;
+animation:fadeInPanel 1s ease forwards;
+animation-delay:4.3s;
+background:rgba(15,23,42,0.9);
+padding:40px;
+border-radius:20px;
+box-shadow:0 0 60px rgba(0,255,255,0.2);
+width:480px;
+text-align:center;
+backdrop-filter:blur(10px);
+}
+
+@keyframes fadeInPanel{
+to{ opacity:1; }
+}
+
+h1{
+margin-bottom:20px;
+font-weight:600;
+letter-spacing:2px;
+}
+
+.count{
+font-size:70px;
+color:#00f2ff;
+margin:20px 0;
+transition:0.3s;
+}
+
+ul{
+list-style:none;
+padding:0;
+max-height:200px;
+overflow-y:auto;
+}
+
+li{
+background:rgba(255,255,255,0.05);
+margin:8px 0;
+padding:12px;
+border-radius:8px;
+transition:0.2s;
+}
+
+li:hover{
+background:rgba(0,255,255,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<!-- OPENING -->
+<div id="opening">
+<div class="logo-wrapper">
+<img src="SaintClick.png" class="logo-img" alt="SaintClick Logo">
+<div class="opening-sub">SaintClick Software</div>
+</div>
+</div>
+
+<!-- PANEL -->
+<div class="container">
+<h1>Online</h1>
+<div class="count" id="count">-</div>
+<ul id="userList"></ul>
+</div>
+
+<script>
+const API_URL = "https://saintclick-api.onrender.com/online";
+let lastOnline = null;
+
+async function fetchOnlineUsers(){
+    const countEl = document.getElementById("count");
+    const listEl = document.getElementById("userList");
+
+    try{
+        const response = await fetch(API_URL,{cache:"no-store"});
+        if(!response.ok) throw new Error();
+
+        const data = await response.json();
+        const usuarios = Array.isArray(data.usuarios)?data.usuarios:[];
+        const online = typeof data.online==="number"?data.online:usuarios.length;
+
+        lastOnline = online;
+        countEl.innerText = online;
+
+        listEl.innerHTML="";
+        usuarios.forEach(u=>{
+            const li=document.createElement("li");
+            li.innerText=u;
+            listEl.appendChild(li);
+        });
+
+    }catch(err){
+        countEl.innerText = lastOnline!==null?lastOnline:"-";
+    }
+}
+
+fetchOnlineUsers();
+setInterval(fetchOnlineUsers,10000);
+</script>
+
+</body>
+</html>
