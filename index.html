@@ -2,15 +2,37 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Viewport optimizado iPhone -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
 <title>SaintClick Software Online</title>
 
+<!-- Icono navegador -->
 <link rel="icon" type="image/png" href="SaintClick.png">
+
+<!-- Icono iPhone -->
+<link rel="apple-touch-icon" sizes="180x180" href="SaintClick.png">
+
+<!-- Activar modo app standalone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SaintClick">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<!-- Color sistema -->
+<meta name="theme-color" content="#020617">
+
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-body{
+html,body{
 margin:0;
+padding:0;
+height:100%;
+overflow:hidden;
+}
+
+body{
 font-family:'Orbitron',sans-serif;
 background:radial-gradient(circle at center,#0f172a 0%,#020617 100%);
 color:white;
@@ -18,59 +40,70 @@ display:flex;
 justify-content:center;
 align-items:center;
 min-height:100vh;
-opacity:0;                /* EMPIEZA OCULTO */
-transition:opacity 1.5s ease; /* FADE SUAVE */
+opacity:0;
+transition:opacity 1.5s ease;
+-webkit-user-select:none;
+-webkit-touch-callout:none;
+overscroll-behavior:none;
 }
 
 body.loaded{
-opacity:1;                /* CUANDO CARGA */
+opacity:1;
 }
 
 .container{
 background:rgba(15,23,42,0.9);
-padding:50px;
-border-radius:20px;
+padding:40px;
+border-radius:25px;
 box-shadow:0 0 60px rgba(0,255,255,0.15);
-width:500px;
+width:90%;
+max-width:500px;
 text-align:center;
-backdrop-filter:blur(10px);
+backdrop-filter:blur(15px);
+overflow:hidden;
 }
 
 .logo{
-width:180px;
+width:160px;
 height:auto;
-margin-bottom:30px;
+margin-bottom:25px;
 filter:drop-shadow(0 0 30px rgba(0,242,255,0.5));
 }
 
 .title{
-font-size:28px;
+font-size:24px;
 font-weight:700;
 letter-spacing:2px;
-margin-bottom:30px;
+margin-bottom:20px;
 color:#00f2ff;
 }
 
 .count{
-font-size:70px;
+font-size:60px;
 color:#00f2ff;
-margin:20px 0;
+margin:15px 0;
 }
 
 ul{
 list-style:none;
 padding:0;
-max-height:220px;
+max-height:200px;
 overflow-y:auto;
-margin-top:20px;
+margin-top:15px;
+scrollbar-width:none;
+}
+
+ul::-webkit-scrollbar{
+display:none;
 }
 
 li{
 background:rgba(255,255,255,0.05);
-margin:8px 0;
-padding:12px;
-border-radius:8px;
+margin:6px 0;
+padding:10px;
+border-radius:10px;
 transition:0.2s;
+font-size:14px;
 }
 
 li:hover{
@@ -119,7 +152,6 @@ async function fetchOnlineUsers(initialLoad = false){
             listEl.appendChild(li);
         });
 
-        // Solo al cargar por primera vez hacemos fade-in
         if(initialLoad){
             document.body.classList.add("loaded");
         }
@@ -132,13 +164,9 @@ async function fetchOnlineUsers(initialLoad = false){
     }
 }
 
-// Primera carga con fade
 fetchOnlineUsers(true);
-
-// Actualización cada 10s sin fade
 setInterval(()=>fetchOnlineUsers(false),10000);
 </script>
 
 </body>
 </html>
-
