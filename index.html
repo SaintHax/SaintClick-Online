@@ -3,29 +3,20 @@
 <head>
 <meta charset="UTF-8">
 
-<!-- Viewport optimizado iPhone -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
 <title>SaintClick Software Online</title>
 
-<!-- Icono navegador -->
 <link rel="icon" type="image/png" href="SaintClick.png">
-
-<!-- MANIFEST PARA WINDOWS / CHROME -->
 <link rel="manifest" href="manifest.json">
-    
-<!-- Icono iPhone -->
-<link rel="apple-touch-icon" sizes="180x180" href="SaintClick-ios.png">
-
-<!-- Activar modo app standalone -->
+<link rel="apple-touch-icon" sizes="180x180" href="SaintClick.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SaintClick">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<!-- Color sistema -->
 <meta name="theme-color" content="#020617">
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 html,body{
@@ -44,10 +35,7 @@ justify-content:center;
 align-items:center;
 min-height:100vh;
 opacity:0;
-transition:opacity 1.5s ease;
--webkit-user-select:none;
--webkit-touch-callout:none;
-overscroll-behavior:none;
+transition:opacity 1.2s ease;
 }
 
 body.loaded{
@@ -63,12 +51,15 @@ width:90%;
 max-width:500px;
 text-align:center;
 backdrop-filter:blur(15px);
-overflow:hidden;
+transition:filter 0.3s ease;
+}
+
+.container.blur{
+filter:blur(6px);
 }
 
 .logo{
 width:160px;
-height:auto;
 margin-bottom:25px;
 filter:drop-shadow(0 0 30px rgba(0,242,255,0.5));
 }
@@ -93,11 +84,6 @@ padding:0;
 max-height:220px;
 overflow-y:auto;
 margin-top:15px;
-scrollbar-width:none;
-}
-
-ul::-webkit-scrollbar{
-display:none;
 }
 
 li{
@@ -107,19 +93,69 @@ padding:10px;
 border-radius:10px;
 transition:0.2s;
 font-size:14px;
+cursor:pointer;
 }
 
 li:hover{
 background:rgba(0,255,255,0.15);
+}
+
+/* 🔥 OVERLAY */
+
+.overlay{
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(12px);
+opacity:0;
+pointer-events:none;
+transition:opacity 0.3s ease;
+}
+
+.overlay.active{
+opacity:1;
+pointer-events:auto;
+}
+
+.modal{
+background:rgba(15,23,42,0.95);
+padding:40px;
+border-radius:20px;
+box-shadow:0 0 80px rgba(0,255,255,0.25);
+max-width:600px;
+width:90%;
+text-align:center;
+transform:scale(0.85);
+transition:transform 0.3s ease;
+}
+
+.overlay.active .modal{
+transform:scale(1);
+}
+
+.config-big{
+font-family:'JetBrains Mono', monospace;
+font-size:18px;
+color:#e2e8f0;
+margin-bottom:15px;
+}
+
+.mode-big{
+font-size:14px;
+color:#00f2ff;
+letter-spacing:1px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
 
-<img src="SaintClick.png" class="logo" alt="SaintClick Logo">
+<img src="SaintClick.png" class="logo">
 
 <div class="title">SaintClick Software</div>
 
@@ -129,9 +165,27 @@ background:rgba(0,255,255,0.15);
 
 </div>
 
+<!-- 🔥 OVERLAY -->
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <div class="config-big" id="overlayConfig"></div>
+        <div class="mode-big" id="overlayMode"></div>
+    </div>
+</div>
+
 <script>
 const API_URL = "https://saintclick-api.onrender.com/online";
 let lastOnline = null;
+
+const overlay = document.getElementById("overlay");
+const overlayConfig = document.getElementById("overlayConfig");
+const overlayMode = document.getElementById("overlayMode");
+const container = document.getElementById("mainContainer");
+
+overlay.addEventListener("click", ()=>{
+    overlay.classList.remove("active");
+    container.classList.remove("blur");
+});
 
 async function fetchOnlineUsers(initialLoad = false){
     const countEl = document.getElementById("count");
@@ -149,9 +203,26 @@ async function fetchOnlineUsers(initialLoad = false){
         countEl.innerText = online;
 
         listEl.innerHTML="";
+
         usuarios.forEach(u=>{
             const li=document.createElement("li");
-            li.innerText=u;
+            li.innerText = u.usuario || "";
+
+            li.addEventListener("click",()=>{
+
+                if(!u.config) return;
+
+                const parts = u.config.split("  |  ");
+                const mode = parts[0] || "";
+                const config = parts[1] || "";
+
+                overlayConfig.innerText = config;
+                overlayMode.innerText = mode;
+
+                overlay.classList.add("active");
+                container.classList.add("blur");
+            });
+
             listEl.appendChild(li);
         });
 
@@ -173,4 +244,3 @@ setInterval(()=>fetchOnlineUsers(false),10000);
 
 </body>
 </html>
-
