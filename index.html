@@ -74,7 +74,7 @@ body::after{
   mix-blend-mode: overlay;
 }
 
-/* Contenedor */
+/* Contenedor con animación */
 .container{
   width: min(520px, 92vw);
   text-align:center;
@@ -97,6 +97,26 @@ body::after{
 .container.loaded{
   opacity:1;
   transform: translateY(0);
+}
+
+.container::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius: var(--radius);
+  pointer-events:none;
+  background: linear-gradient(120deg,
+    rgba(0,242,255,0.28),
+    rgba(255,255,255,0.04),
+    rgba(0,242,255,0.16)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding:1px;
+  opacity:.9;
 }
 
 .logo{
@@ -128,7 +148,6 @@ body::after{
   margin: 6px 0 18px;
 }
 
-/* Lista */
 ul{
   list-style:none;
   padding:0;
@@ -195,16 +214,6 @@ li:hover{
   font-size: 16px;
   color: #e2e8f0;
   white-space: pre-wrap;
-}
-
-/* ===== AJUSTE SOLO MÓVIL ===== */
-@media (max-width: 600px){
-  .overlay-pill{
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 }
 
 .mode-big{
