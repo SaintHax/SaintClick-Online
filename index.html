@@ -3,24 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-
 <title>SaintClick Software Online</title>
 
 <link rel="icon" type="image/png" href="SaintClick.png">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="180x180" href="SaintClick.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="SaintClick">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#020617">
-
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --bg0:#020617;
-  --bg1:#0f172a;
   --card: rgba(15,23,42,0.88);
   --card2: rgba(2,6,23,0.62);
   --text:#e2e8f0;
@@ -45,36 +36,8 @@ body{
   justify-content:center;
   align-items:center;
   min-height:100vh;
-  padding:
-    max(16px, env(safe-area-inset-top))
-    max(16px, env(safe-area-inset-right))
-    max(16px, env(safe-area-inset-bottom))
-    max(16px, env(safe-area-inset-left));
 }
 
-/* Fondo estable */
-body::before{
-  content:"";
-  position:fixed;
-  inset:-30%;
-  z-index:-2;
-  background:
-    radial-gradient(circle at 50% 35%, rgba(0,242,255,0.18), transparent 55%),
-    radial-gradient(circle at 50% 85%, rgba(124,58,237,0.08), transparent 55%),
-    radial-gradient(circle at center, #0f172a 0%, #020617 58%, #010313 100%);
-}
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  opacity:.22;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.15'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
-}
-
-/* Contenedor con animación */
 .container{
   width: min(520px, 92vw);
   text-align:center;
@@ -85,10 +48,6 @@ body::after{
   box-shadow:
     0 22px 60px rgba(0,0,0,0.55),
     0 0 70px rgba(0,242,255,0.10);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  position:relative;
-
   opacity:0;
   transform: translateY(15px);
   transition: all 0.6s ease;
@@ -99,30 +58,9 @@ body::after{
   transform: translateY(0);
 }
 
-.container::before{
-  content:"";
-  position:absolute;
-  inset:-1px;
-  border-radius: var(--radius);
-  pointer-events:none;
-  background: linear-gradient(120deg,
-    rgba(0,242,255,0.28),
-    rgba(255,255,255,0.04),
-    rgba(0,242,255,0.16)
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  padding:1px;
-  opacity:.9;
-}
-
 .logo{
   width: 160px;
   margin-bottom: 16px;
-  filter: drop-shadow(0 0 28px rgba(0,242,255,0.40));
 }
 
 .title{
@@ -130,15 +68,12 @@ body::after{
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--cyan);
-  margin: 0 0 8px;
 }
 
 .subtitle{
   font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
   color: var(--muted);
-  margin: 0 0 14px;
+  margin-bottom: 14px;
 }
 
 .count{
@@ -148,80 +83,94 @@ body::after{
   margin: 6px 0 18px;
 }
 
+/* LISTA PERFECTA */
 ul{
   list-style:none;
   padding:0;
   margin:0;
-  max-height: 240px;
+
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+
   overflow-y:auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior:smooth;
+
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+ul::-webkit-scrollbar{
+  width:0;
+  height:0;
 }
 
 li{
   background: rgba(255,255,255,0.05);
-  margin: 8px 0;
   padding: 12px 14px;
   border-radius: 14px;
-  transition: 0.18s ease;
   font-size: 14px;
   cursor:pointer;
   border: 1px solid rgba(255,255,255,0.06);
+  transition: 0.18s ease;
+  scroll-snap-align:start;
 }
 
 li:hover{
   background: rgba(0,242,255,0.10);
   border-color: rgba(0,242,255,0.18);
-  transform: translateY(-1px);
 }
 
-/* Overlay */
+/* OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
   display:flex;
   align-items:center;
   justify-content:center;
-  background: rgba(0,0,0,0.62);
+  background: rgba(0,0,0,0.65);
   backdrop-filter: blur(14px);
   opacity:0;
   pointer-events:none;
   transition: opacity 0.25s ease;
 }
+
 .overlay.active{
   opacity:1;
   pointer-events:auto;
 }
 
 .modal{
-  width: min(760px, 94vw);
+  width:min(760px,94vw);
+  background: linear-gradient(180deg, rgba(18,28,52,0.9), rgba(2,6,23,0.9));
+  border-radius:22px;
+  padding:24px;
+  border:1px solid rgba(255,255,255,0.1);
   text-align:center;
-  background: linear-gradient(180deg, rgba(18,28,52,0.75), rgba(2,6,23,0.62));
-  border-radius: 22px;
-  padding: 26px 22px 22px;
-  border: 1px solid rgba(255,255,255,0.10);
-  transform: scale(0.92);
-  transition: transform 0.25s ease;
+  transform:scale(.9);
+  transition:.25s ease;
 }
+
 .overlay.active .modal{
-  transform: scale(1);
+  transform:scale(1);
 }
 
 .overlay-pill{
-  border-radius: 16px;
-  padding: 14px 16px;
-  background: rgba(15,23,42,0.85);
-  border: 1px solid rgba(255,255,255,0.10);
+  border-radius:16px;
+  padding:14px 16px;
+  background: rgba(15,23,42,0.9);
+  border:1px solid rgba(255,255,255,0.1);
   font-family:'JetBrains Mono', monospace;
-  font-size: 16px;
-  color: #e2e8f0;
-  white-space: pre-wrap;
+  font-size:16px;
+  white-space:pre-wrap;
 }
 
 .mode-big{
-  margin-top: 14px;
-  font-size: 14px;
-  color: var(--cyan);
-  letter-spacing: 2px;
-  text-transform: uppercase;
+  margin-top:14px;
+  font-size:14px;
+  color:var(--cyan);
+  letter-spacing:2px;
+  text-transform:uppercase;
 }
 </style>
 </head>
@@ -229,15 +178,11 @@ li:hover{
 <body>
 
 <div class="container" id="mainContainer">
-
-  <img src="SaintClick.png" class="logo" alt="SaintClick">
-
+  <img src="SaintClick.png" class="logo">
   <div class="title">SaintClick Software</div>
   <div class="subtitle">Usuarios online</div>
-
   <div class="count" id="count">-</div>
   <ul id="userList"></ul>
-
 </div>
 
 <div class="overlay" id="overlay">
@@ -254,64 +199,88 @@ let lastOnline = null;
 const overlay = document.getElementById("overlay");
 const overlayConfig = document.getElementById("overlayConfig");
 const overlayMode = document.getElementById("overlayMode");
-const container = document.getElementById("mainContainer");
 
-overlay.addEventListener("click", (e)=>{
-  if(e.target !== overlay) return;
-  overlay.classList.remove("active");
+overlay.addEventListener("click", e=>{
+  if(e.target===overlay) overlay.classList.remove("active");
 });
 
-document.addEventListener("keydown", (e)=>{
-  if(e.key === "Escape" && overlay.classList.contains("active")){
-    overlay.classList.remove("active");
-  }
+document.addEventListener("keydown", e=>{
+  if(e.key==="Escape") overlay.classList.remove("active");
 });
 
-async function fetchOnlineUsers(initialLoad = false){
+function limitarA3(){
+  const list = document.getElementById("userList");
+  const first = list.querySelector("li");
+  if(!first) return;
+
+  const gap = parseFloat(getComputedStyle(list).gap);
+  const itemHeight = first.offsetHeight;
+  const exact = (itemHeight * 3) + (gap * 2);
+
+  list.style.maxHeight = exact+"px";
+  list.style.overflowY = list.children.length>3?"auto":"hidden";
+}
+
+async function fetchOnlineUsers(initialLoad=false){
   const countEl = document.getElementById("count");
   const listEl = document.getElementById("userList");
 
   try{
-    const response = await fetch(API_URL, { cache:"no-store" });
+    const response = await fetch(API_URL,{cache:"no-store"});
     if(!response.ok) throw new Error();
 
     const data = await response.json();
-    const usuarios = Array.isArray(data.usuarios) ? data.usuarios : [];
-    const online = typeof data.online === "number" ? data.online : usuarios.length;
+    const usuarios = Array.isArray(data.usuarios)?data.usuarios:[];
+    const online = typeof data.online==="number"?data.online:usuarios.length;
 
     lastOnline = online;
     countEl.innerText = online;
-    listEl.innerHTML = "";
+    listEl.innerHTML="";
 
     usuarios.forEach(u=>{
-      const li = document.createElement("li");
-      li.textContent = (u.usuario || "").trim();
+      const li=document.createElement("li");
+      li.textContent=(u.usuario||"").trim();
 
-      li.addEventListener("click", ()=>{
+      li.addEventListener("click",()=>{
         if(!u.config) return;
-        const parts = String(u.config).split("  |  ");
-        overlayConfig.innerText = parts[1] || "(sin configuración)";
-        overlayMode.innerText = parts[0] || "";
+        const parts=String(u.config).split("  |  ");
+        overlayConfig.innerText=parts[1]||"(sin configuración)";
+        overlayMode.innerText=parts[0]||"";
         overlay.classList.add("active");
       });
 
       listEl.appendChild(li);
     });
 
+    requestAnimationFrame(limitarA3);
+
     if(initialLoad){
-      container.classList.add("loaded");
+      document.getElementById("mainContainer").classList.add("loaded");
     }
 
-  }catch(err){
-    countEl.innerText = lastOnline !== null ? lastOnline : "-";
-    if(initialLoad){
-      container.classList.add("loaded");
-    }
+  }catch{
+    countEl.innerText = lastOnline ?? "-";
   }
 }
 
+/* 1 scroll = 1 usuario */
+const list=document.getElementById("userList");
+list.addEventListener("wheel",e=>{
+  if(list.children.length<=3) return;
+  e.preventDefault();
+
+  const gap=parseFloat(getComputedStyle(list).gap);
+  const first=list.querySelector("li");
+  const step=first.offsetHeight+gap;
+
+  list.scrollBy({
+    top:e.deltaY>0?step:-step,
+    behavior:"smooth"
+  });
+},{passive:false});
+
 fetchOnlineUsers(true);
-setInterval(()=>fetchOnlineUsers(false), 10000);
+setInterval(()=>fetchOnlineUsers(false),10000);
 </script>
 
 </body>
